@@ -1,5 +1,5 @@
 import unittest2
-from ..ai import ImpossibleAI
+from ..ai import EasyAI
 from ..board import Board
 
 
@@ -7,7 +7,7 @@ class ImpossibleAITestCase(unittest2.TestCase):
     def setUp(self):
         super(ImpossibleAITestCase, self).setUp()
         self.board = Board()
-        self.ai = ImpossibleAI()
+        self.ai = EasyAI()
 
     def test_next_move(self):
         self.assertEqual(self.ai.next_move(self.board), (1, 1))

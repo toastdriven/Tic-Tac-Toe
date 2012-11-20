@@ -1,6 +1,6 @@
 from __future__ import print_function
 import sys
-from ai import ImpossibleAI
+from ai import EasyAI
 from board import Board, OutOfBounds, InvalidMove
 
 
@@ -23,7 +23,7 @@ class Game(object):
         else:
             self.computer_marker = 'X'
 
-        self.ai = ImpossibleAI()
+        self.ai = EasyAI()
 
     def player_move(self, x, y):
         self.board.play(x, y, self.player_marker)

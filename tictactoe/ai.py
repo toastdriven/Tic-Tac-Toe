@@ -1,4 +1,4 @@
-class ImpossibleAI(object):
+class EasyAI(object):
     # This is actually not impossible at all right now.
     # Kinda brain-dead but need something that plays the game.
     def next_move(self, board):
