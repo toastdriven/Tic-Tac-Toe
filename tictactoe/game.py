@@ -45,17 +45,32 @@ class Game(object):
 
     def run(self):
         while self.board.moves_left():
-            self.draw_board()
+            if self.player_marker == 'X':
+                # If the player is the X, they get to go first.
+                self.draw_board()
 
-            if self.computer_turn():
-                self.draw_win('The AI wins!')
-                return
+                if self.player_turn():
+                    self.draw_win("You win!")
+                    return
 
-            self.draw_board()
+                self.draw_board()
 
-            if self.player_turn():
-                self.draw_win("You win!")
-                return
+                if self.computer_turn():
+                    self.draw_win('The AI wins!')
+                    return
+            else:
+                # Otherwise, the computer gets to go first.
+                self.draw_board()
+
+                if self.computer_turn():
+                    self.draw_win('The AI wins!')
+                    return
+
+                self.draw_board()
+
+                if self.player_turn():
+                    self.draw_win("You win!")
+                    return
 
         self.draw_win('Tie game. :(')
 
