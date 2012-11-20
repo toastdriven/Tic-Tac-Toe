@@ -34,12 +34,47 @@ class Game(object):
         self.board.play(x, y, self.computer_marker)
         return self.board.check_for_win() == self.computer_marker
 
+    def computer_turn(self):
+        if not self.board.moves_left():
+            return False
+
+        if self.computer_move():
+            return True
+
+        return False
+
+    def run(self):
+        while self.board.moves_left():
+            self.draw_board()
+
+            if self.computer_turn():
+                self.draw_win('The AI wins!')
+                return
+
+            self.draw_board()
+
+            if self.player_turn():
+                self.draw_win("You win!")
+                return
+
+        self.draw_win('Tie game. :(')
+
+    # The unimplemented.
+    def draw_board(self):
+        raise NotImplementedError("Your subclass needs to implement `draw_board`.")
+
+    def draw_win(self, message):
+        raise NotImplementedError("Your subclass needs to implement `draw_board`.")
+
+    def player_turn(self):
+        raise NotImplementedError("Your subclass needs to implement `draw_board`.")
+
 
 class ConsoleGame(Game):
     """
     This version does console output! Hooray!
     """
-    def print_board(self):
+    def draw_board(self):
         # Hard-coded size. Sucks. :/
         print("   0   1   2")
         print("")
@@ -48,6 +83,9 @@ class ConsoleGame(Game):
         print("1  {0} | {1} | {2}".format(self.board.check(0, 1) or ' ', self.board.check(1, 1) or ' ', self.board.check(2, 1) or ' '))
         print("  -----------")
         print("2  {0} | {1} | {2}".format(self.board.check(0, 2) or ' ', self.board.check(1, 2) or ' ', self.board.check(2, 2) or ' '))
+        print('')
+        print("Moves Left: {0}".format(self.board.moves_left()))
+        print('')
 
     def parse_location(self, the_input):
         if not ',' in the_input:
@@ -63,7 +101,7 @@ class ConsoleGame(Game):
 
         return bits[0], bits[1]
 
-    def print_win(self, message):
+    def draw_win(self, message):
         print('')
         print('')
         print('')
@@ -72,42 +110,35 @@ class ConsoleGame(Game):
         print('')
         print('  ' + message.upper())
         print('')
-        self.print_board()
+        self.draw_board()
         print('')
         print('')
 
-    def run(self):
-        while self.board.moves_left():
-            self.print_board()
-            print('')
-            print("Moves Left: {0}".format(self.board.moves_left()))
-            print('')
-            location = None
+    def player_turn(self):
+        if not self.board.moves_left():
+            return False
 
-            while location is None:
-                move_location = raw_input('Where would you like to place your marker? (Ex: "2, 1" for bottom middle): ')
-                location = self.parse_location(move_location)
+        location = None
 
-                if location is None:
-                    print("Sorry, I couldn't recognize that. Please try again...")
-                    continue
+        while location is None:
+            move_location = raw_input('Where would you like to place your marker? (Ex: "2, 1" for bottom middle): ')
+            location = self.parse_location(move_location)
 
-                x, y = location
+            if location is None:
+                print("Sorry, I couldn't recognize that. Please try again...")
+                continue
 
-                try:
-                    # Player's play.
-                    if self.player_move(x, y):
-                        self.print_win("You win!")
-                        return
-                except (OutOfBounds, InvalidMove) as e:
-                    print(e)
-                    location = None
+            x, y = location
 
-            if self.board.moves_left() and self.computer_move():
-                self.print_win('The AI wins!')
-                return
+            try:
+                # Player's play.
+                if self.player_move(x, y):
+                    return True
+            except (OutOfBounds, InvalidMove) as e:
+                print(e)
+                location = None
 
-        self.print_win('Tie game. :(')
+        return False
 
 
 def usage():
