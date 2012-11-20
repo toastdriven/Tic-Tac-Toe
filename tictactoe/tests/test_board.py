@@ -49,6 +49,29 @@ class BoardTestCase(unittest2.TestCase):
         self.assertRaises(OutOfBounds, self.board.within_bounds, 0, 3)
         self.assertRaises(OutOfBounds, self.board.within_bounds, 3, 0)
 
+    def test_check(self):
+        self.board.board = [
+            ['X', None, 'O'],
+            ['X', 'X', 'O'],
+            ['O', None, None],
+        ]
+
+        # Outside the bounds.
+        self.assertRaises(OutOfBounds, self.board.check, 0, -1)
+        self.assertRaises(OutOfBounds, self.board.check, -1, 0)
+        self.assertRaises(OutOfBounds, self.board.check, 0, 3)
+        self.assertRaises(OutOfBounds, self.board.check, 3, 0)
+
+        self.assertEqual(self.board.check(0, 0), 'X')
+        self.assertEqual(self.board.check(1, 0), None)
+        self.assertEqual(self.board.check(2, 0), 'O')
+        self.assertEqual(self.board.check(0, 1), 'X')
+        self.assertEqual(self.board.check(1, 1), 'X')
+        self.assertEqual(self.board.check(2, 1), 'O')
+        self.assertEqual(self.board.check(0, 2), 'O')
+        self.assertEqual(self.board.check(1, 2), None)
+        self.assertEqual(self.board.check(2, 2), None)
+
     def test_play(self):
         self.board.board = [
             ['X', None, 'O'],

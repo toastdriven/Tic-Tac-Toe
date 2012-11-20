@@ -24,7 +24,7 @@ class Board(object):
 
         # Initialize the board.
         # We start at top-left, indexing with x then y.
-        self.board = [[None for i in range(self.height)] for j in range(self.width)]
+        self.board = [[None for i in range(self.width)] for j in range(self.height)]
 
     def within_bounds(self, x, y):
         if x < 0:
@@ -41,22 +41,26 @@ class Board(object):
 
         return True
 
+    def check(self, x, y):
+        self.within_bounds(x, y)
+        return self.board[y][x]
+
     def play(self, x, y, marker='X'):
         self.within_bounds(x, y)
 
         if not marker in ('X', 'O'):
             raise InvalidMove("Silly! Only X's & O's are allowed.")
 
-        if self.board[x][y] is not None:
-            raise InvalidMove("You can't play there. There's already a {0} there.".format(self.board[x][y]))
+        if self.board[y][x] is not None:
+            raise InvalidMove("You can't play there. There's already a {0} there.".format(self.board[y][x]))
 
-        self.board[x][y] = marker
+        self.board[y][x] = marker
         return True
 
     def check_for_win(self):
         # Check the horizontals.
         for y in range(self.height):
-            results = [self.board[x][y] for x in range(self.width)]
+            results = [self.board[y][x] for x in range(self.width)]
 
             if not None in results:
                 if len(set(results)) == 1:
@@ -65,7 +69,7 @@ class Board(object):
 
         # Check the verticals.
         for x in range(self.width):
-            results = [self.board[x][y] for y in range(self.height)]
+            results = [self.board[y][x] for y in range(self.height)]
 
             if not None in results:
                 if len(set(results)) == 1:
@@ -96,7 +100,7 @@ class Board(object):
 
         for x in range(self.width):
             for y in range(self.height):
-                if self.board[x][y] is not None:
+                if self.board[y][x] is not None:
                     moves -= 1
 
         return moves
